@@ -1,4 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-  
+
+@layer base {
+    @font-face {
+        font-family: 'Caveat';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('./assets/fonts/Caveat.ttf') format('truetype');
+    }
+    @font-face {
+        font-family: 'Comfortaa';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('./assets/fonts/Comfortaa.ttf') format('truetype');
+    }
+    @font-face {
+        font-family: 'GreatVibes';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('./assets/fonts/GreatVibes.ttf') format('truetype');
+    }
+
+}
