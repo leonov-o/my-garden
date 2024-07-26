@@ -17,7 +17,7 @@ export const SettingsButton = () => {
                         <DownloadIcon className="mr-2 h-4 w-4"/> Импорт из Excel
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                        <UploadIcon className="mr-2 h-4 w-4"/> Экспорт из Excel
+                        <UploadIcon className="mr-2 h-4 w-4"/> Экспорт в Excel
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
