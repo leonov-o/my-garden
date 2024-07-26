@@ -1,38 +1,33 @@
-import {Plant} from "@/store";
+import {Plant, useStore} from "@/store";
 import {
     ColumnDef,
     ColumnFiltersState,
     flexRender,
     getCoreRowModel,
-    getFilteredRowModel, getPaginationRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
     getSortedRowModel,
     SortingState,
     useReactTable,
-    VisibilityState,
 } from "@tanstack/react-table"
-
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
 import {Button} from "@/components/ui/button";
 import React from "react";
-import {
-    CaretDownIcon,
-    CaretUpIcon, ChevronLeftIcon, ChevronRightIcon, DoubleArrowLeftIcon,
-    DoubleArrowRightIcon,
-    EyeOpenIcon,
-    Pencil1Icon,
-    TrashIcon
-} from "@radix-ui/react-icons";
-import {Input} from "@/components/ui/input";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {CaretDownIcon, CaretUpIcon, EyeOpenIcon, Pencil1Icon, TrashIcon} from "@radix-ui/react-icons";
 import {DataTableColumnHeader} from "@/components/DataTableColumnHeader";
 import {DataTablePagination} from "@/components/DataTablePagination";
+import {cn} from "@/lib/utils";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 
 export const columns: ColumnDef<Plant>[] = [
     {
@@ -44,54 +39,111 @@ export const columns: ColumnDef<Plant>[] = [
         header: "Название",
     },
     {
+        accessorKey: "count",
+        header: "Количество",
+        cell: ({getValue}) => {
+            return `${getValue() || 0} шт`
+        },
+    },
+    {
         accessorKey: "description",
         header: "Описание",
+        cell: ({getValue}) => {
+            return getValue() || "-"
+        },
     },
     {
         accessorKey: "width",
         header: "Ширина",
+        cell: ({getValue}) => {
+            return `${getValue() || 0} м`
+        },
     },
     {
         accessorKey: "height",
         header: "Высота",
+        cell: ({getValue}) => {
+            return `${getValue() || 0} м`
+        },
     },
     {
         accessorKey: "crownShape",
         header: "Форма короны",
+        cell: ({getValue}) => {
+            return getValue() || "-"
+        },
     },
     {
         accessorKey: "foliageColor",
         header: "Цвет листьев",
+        cell: ({getValue}) => {
+            return getValue() || "-"
+        },
     },
     {
         accessorKey: "growthRate",
         header: "Скорость роста",
+        cell: ({getValue}) => {
+            return getValue() || "-"
+        },
     },
     {
         accessorKey: "crownTexture",
         header: "Фактура короны",
+        cell: ({getValue}) => {
+            return getValue() || "-"
+        },
     },
     {
         accessorKey: "floweringPeriod",
         header: "Период цветения",
+        cell: ({getValue}) => {
+            return getValue() || "-"
+        },
     },
     {
         accessorKey: "flowerColor",
         header: "Цвет цветка",
+        cell: ({getValue}) => {
+            return getValue() || "-"
+        },
     },
     {
         accessorKey: "lightPreference",
         header: "Предпочтение освещения",
+        cell: ({getValue}) => {
+            return getValue() || "-"
+        },
     },
     {
         id: "actions",
         enableHiding: false,
         cell: ({row}) => {
+            const sidebarRead = useStore(state => state.sidebarRead);
+            const sidebarUpdate = useStore(state => state.sidebarUpdate);
+            const deletePlant = useStore(state => state.deletePlant);
+
+            const id = row.original.id;
             return (
                 <div className="flex space-x-1">
-                    <Button variant="outline" size="icon"><EyeOpenIcon/></Button>
-                    <Button variant="outline" size="icon"><Pencil1Icon/></Button>
-                    <Button variant="destructive" size="icon"><TrashIcon/></Button>
+                    <Button variant="outline" size="icon" onClick={() => sidebarRead(id)}><EyeOpenIcon/></Button>
+                    <Button variant="outline" size="icon" onClick={() => sidebarUpdate(id)}><Pencil1Icon/></Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="destructive" size="icon"><TrashIcon/></Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Вы точно хотите удалить эту запись?</AlertDialogTitle>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Отмена</AlertDialogCancel>
+                                <AlertDialogAction className="bg-red-500 hover:bg-red-600" onClick={() => deletePlant(id)}>
+                                    Удалить
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             )
         },
@@ -99,24 +151,24 @@ export const columns: ColumnDef<Plant>[] = [
 
 ];
 
-
-interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+interface DataTableProps<TValue> {
+    columns: ColumnDef<Plant, TValue>[]
+    data: Plant[]
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TValue>({
                                              columns,
                                              data,
-                                         }: DataTableProps<TData, TValue>) {
+                                         }: DataTableProps<TValue>) {
 
+    const columnVisibility = useStore(state => state.columnVisibility);
+    const selectedRecord = useStore(state => state.selectedPlant);
+    const setColumnVisibility = useStore(state => state.setColumnVisibility);
 
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
     )
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({})
 
     const table = useReactTable({
         data,
@@ -171,7 +223,12 @@ export function DataTable<TData, TValue>({
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell className={cn(
+                                            "text-center",
+                                            {
+                                                "bg-green-100": row.original.id === selectedRecord?.id
+                                            }
+                                        )} key={cell.id}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
