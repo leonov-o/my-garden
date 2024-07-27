@@ -5,12 +5,17 @@ import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
+import {FieldDef} from "@/lib/FieldDef";
+
+interface SidebarRecordDetailsProps {
+    fields: FieldDef[]
+}
 
 interface FormDataObject {
     [key: string]: FormDataEntryValue;
 }
 
-export const SidebarRecordDetails = () => {
+export const SidebarRecordDetails = ({fields} : SidebarRecordDetailsProps) => {
     const isSidebarOpen = useStore(state => state.isSidebarOpen);
     const sidebarClose = useStore(state => state.sidebarClose);
     const sidebarMode = useStore(state => state.sidebarMode);
@@ -62,6 +67,60 @@ export const SidebarRecordDetails = () => {
             setImagePreview(null);
         }
     };
+
+    const renderField = (field: FieldDef) => {
+        const commonProps = {
+            id: field.name,
+            name: field.name,
+            required: field.sidebarDisplay.required,
+            disabled: sidebarMode === 'read',
+            defaultValue: selectedRecord?.name || ''
+        };
+
+        switch (field.type) {
+            case 'string':
+                return <Input key={field.name} type="text" {...commonProps} />;
+            case 'number':
+                return <Input key={field.name} type="number" min={field.sidebarDisplay.min} step={field.sidebarDisplay.step} {...commonProps} />;
+            case 'image':
+                return (
+                    <div key={field.name} className="relative w-72 h-72 border-2 border-dashed border-gray-300 flex items-center justify-center rounded-lg overflow-hidden">
+                        <input id={field.name} name={field.name} type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+                        {sidebarMode !== 'read' && (
+                            <label htmlFor={field.name} className="absolute z-10 inset-0 bg-green-600 bg-opacity-75 text-white flex items-center justify-center text-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+                                Выберите изображение
+                            </label>
+                        )}
+                        {imagePreview && <img src={imagePreview} alt="Image Preview" className="absolute inset-0 object-cover w-full h-full" />}
+                    </div>
+                );
+            case 'textarea':
+                return <Textarea key={field.name} className="min-h-[100px]" {...commonProps} />;
+            default:
+                return null;
+        }
+    };
+
+    const groupFields = (fields: FieldDef[]) => {
+        return fields.filter(field => field.sidebarDisplay.display).reduce((acc: {
+            [key: number]: FieldDef[]
+        }, field) => {
+            const group = field.sidebarDisplay.group || 0;
+            if (!acc[group]) {
+                acc[group] = [];
+            }
+            acc[group].push(field);
+
+            if(field.sidebarDisplay.cols){
+                acc[group].length = field.sidebarDisplay.cols
+            }
+
+            return acc;
+        }, {});
+    };
+
+    const groupedFields = groupFields(fields);
+
     return (
         <Sheet  open={isSidebarOpen} onOpenChange={sidebarClose}>
             <SheetContent  side="left"
@@ -73,114 +132,21 @@ export const SidebarRecordDetails = () => {
                 <div className="flex-1 p-4">
                     <div className="max-w-4xl mx-auto">
                         <form className="grid gap-6" onSubmit={handleSubmit}>
-                            <div className="grid gap-2">
-                                <Label>Изображение</Label>
-                                <div
-                                    className="relative w-72 h-72 border-2 border-dashed border-gray-300 flex items-center justify-center rounded-lg overflow-hidden">
-                                    <input
-                                        id="image"
-                                        name="image"
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        className="hidden"
-                                    />
-                                    {
-                                        sidebarMode !== "read" && (
-                                            <label
-                                                htmlFor="image"
-                                                className="absolute z-10 inset-0 bg-green-600 bg-opacity-75 text-white flex items-center justify-center text-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
-                                                Выберите изображение
-                                            </label>
-                                        )
-                                    }
-                                    {imagePreview && (
-                                        <img
-                                            src={imagePreview}
-                                            alt="Image Preview"
-                                            className="absolute inset-0 object-cover w-full h-full"
-                                        />
-                                    )}
-                                </div>
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Название</Label>
-                                <Input id="name" name="name" required disabled={sidebarMode === "read"}
-                                       defaultValue={selectedRecord?.name || ''}/>
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="description">Описание</Label>
-                                <Textarea
-                                    id="description"
-                                    name="description"
-                                    className="min-h-[100px]"
-                                    disabled={sidebarMode === "read"}
-                                    defaultValue={selectedRecord?.description || ''}
-                                />
-                            </div>
-                            <div className="grid grid-cols-3 gap-4">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="width">Ширина</Label>
-                                    <Input id="width" name="width" type="number" min={0} step={0.01}
-                                           disabled={sidebarMode === "read"}
-                                           defaultValue={selectedRecord?.width || ''}/>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="height">Высота</Label>
-                                    <Input id="height" name="height" type="number" min={0} step={0.01}
-                                           disabled={sidebarMode === "read"}
-                                           defaultValue={selectedRecord?.height || ''}/>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="height">Количество</Label>
-                                    <Input id="count" name="count" type="number" min={0}
-                                           disabled={sidebarMode === "read"}
-                                           defaultValue={selectedRecord?.height || ''}/>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="crownShape">Форма кроны</Label>
-                                    <Input id="crownShape" name="crownShape" disabled={sidebarMode === "read"}
-                                           defaultValue={selectedRecord?.crownShape || ''}/>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="crownTexture">Фактура кроны</Label>
-                                    <Input id="crownTexture" name="crownTexture" disabled={sidebarMode === "read"}
-                                           defaultValue={selectedRecord?.crownTexture || ''}/>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="foliageColor">Цвет листьев</Label>
-                                    <Input id="foliageColor" name="foliageColor" disabled={sidebarMode === "read"}
-                                           defaultValue={selectedRecord?.foliageColor || ''}/>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="flowerColor">Цвет цветка</Label>
-                                    <Input id="flowerColor" name="flowerColor" disabled={sidebarMode === "read"}
-                                           defaultValue={selectedRecord?.flowerColor || ''}/>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="growthRate">Скорость роста</Label>
-                                    <Input id="growthRate" name="growthRate" disabled={sidebarMode === "read"}
-                                           defaultValue={selectedRecord?.growthRate || ''}/>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="floweringPeriod">Период цветения</Label>
-                                    <Input id="floweringPeriod" name="floweringPeriod" disabled={sidebarMode === "read"}
-                                           defaultValue={selectedRecord?.floweringPeriod || ''}/>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="lightPreference">Предпочтение освещения</Label>
-                                    <Input id="lightPreference" name="lightPreference" disabled={sidebarMode === "read"}
-                                           defaultValue={selectedRecord?.lightPreference || ''}/>
-                                </div>
-                            </div>
+                            {Object.keys(groupedFields).map(group => {
+                                const groupFields = groupedFields[parseInt(group)];
+                                const cols = groupFields.length;
+
+                                return (
+                                    <div key={group} className={`grid grid-cols-${cols} gap-4`}>
+                                        {groupFields.map(field => (
+                                            <div key={field.name} className="grid gap-2">
+                                                <Label htmlFor={field.name}>{field.displayName}</Label>
+                                                {renderField(field)}
+                                            </div>
+                                        ))}
+                                    </div>
+                                );
+                            })}
                             <SheetFooter aria-describedby="SheetDescription">
                                 {
                                     sidebarMode !== "read" && (
