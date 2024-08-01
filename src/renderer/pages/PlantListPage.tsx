@@ -10,6 +10,7 @@ import {TableActions} from "@/components/TableActions";
 
 export const PlantListPage = () => {
     const plants = useStore((state) => state.plants);
+    const isSidebarOpen = useStore((state) => state.isSidebarOpen);
     const toastMessage = useStore((state) => state.toastMessage);
 
     useEffect(() => {
@@ -33,6 +34,7 @@ export const PlantListPage = () => {
                 }
                 return field.nullValue || "";
             },
+            filterFn: field.type === "number" ? "inNumberRange" : "equalsString"
         }));
     columns.push({
             id: "actions",
@@ -46,7 +48,7 @@ export const PlantListPage = () => {
     return (
         <div className="">
             <DataTable columns={columns} data={plants}/>
-            <SidebarRecordDetails fields={fields}/>
+            {isSidebarOpen && <SidebarRecordDetails fields={fields}/>}
             <Toaster/>
         </div>
     );

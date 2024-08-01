@@ -94,7 +94,7 @@ export function DataTable<TValue>({
                                         <TableCell className={cn(
                                             "text-center",
                                             {
-                                                "bg-green-100": row.original.id === selectedRecord?.id
+                                                "bg-green-100": row.getValue("id") === selectedRecord?.id
                                             }
                                         )} key={cell.id}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
