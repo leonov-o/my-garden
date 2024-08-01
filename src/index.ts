@@ -15,6 +15,8 @@ const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     minWidth: 600,
     minHeight: 300,
+    width: 1100,
+    height: 710,
     autoHideMenuBar: true,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
