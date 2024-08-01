@@ -13,12 +13,14 @@ interface ISidebar {
 export interface FieldDef {
     name: string
     displayName: string
-    type: "number" | "string" | "textarea" | "image"
+    type: "number" | "string" | "select" | "select-new" | "textarea" | "image"
+    ref?: string
     display?: boolean
     nullValue?: string
     postfix?: string
     sidebarDisplay: ISidebar
     filter?: boolean
+    selectValues?: string[]
 }
 
 export const fields: FieldDef[] = [
@@ -71,7 +73,8 @@ export const fields: FieldDef[] = [
             display: true,
             group: 3,
             min: 0,
-            step: 0.01
+            max: 10,
+            step: 0.1
         },
         filter: true,
         nullValue: "-",
@@ -86,7 +89,8 @@ export const fields: FieldDef[] = [
             display: true,
             group: 3,
             min: 0,
-            step: 0.01
+            max: 10,
+            step: 0.1
         },
         filter: true,
         nullValue: "-",
@@ -107,13 +111,36 @@ export const fields: FieldDef[] = [
         postfix: "шт"
     },
     {
-        name: "crownShape",
-        displayName: "Форма кроны",
-        type: "string",
+        name: "category",
+        displayName: "Категория",
+        type: "select-new",
         display: true,
         sidebarDisplay: {
             display: true,
             group: 4
+        },
+        filter: true
+    },
+    {
+        name: "kind",
+        ref: "category",
+        displayName: "Вид",
+        type: "select-new",
+        display: true,
+        sidebarDisplay: {
+            display: true,
+            group: 4
+        },
+        filter: true
+    },
+    {
+        name: "crownShape",
+        displayName: "Форма кроны",
+        type: "select-new",
+        display: true,
+        sidebarDisplay: {
+            display: true,
+            group: 5
         },
         filter: true,
         nullValue: "-"
@@ -121,11 +148,11 @@ export const fields: FieldDef[] = [
     {
         name: "crownTexture",
         displayName: "Фактура кроны",
-        type: "string",
+        type: "select-new",
         display: true,
         sidebarDisplay: {
             display: true,
-            group: 4
+            group: 5
         },
         filter: true,
         nullValue: "-"
@@ -137,7 +164,7 @@ export const fields: FieldDef[] = [
         display: true,
         sidebarDisplay: {
             display: true,
-            group: 5
+            group: 6
         },
         filter: true,
         nullValue: "-"
@@ -145,18 +172,6 @@ export const fields: FieldDef[] = [
     {
         name: "flowerColor",
         displayName: "Цвет цветка",
-        type: "string",
-        display: true,
-        sidebarDisplay: {
-            display: true,
-            group: 5
-        },
-        filter: true,
-        nullValue: "-"
-    },
-    {
-        name: "growthRate",
-        displayName: "Скорость роста",
         type: "string",
         display: true,
         sidebarDisplay: {
@@ -173,20 +188,46 @@ export const fields: FieldDef[] = [
         display: true,
         sidebarDisplay: {
             display: true,
-            group: 6
+            group: 7
+        },
+        filter: true,
+        nullValue: "-"
+    },
+    {
+        name: "growthRate",
+        displayName: "Скорость роста",
+        type: "select",
+        selectValues: ["Быстрорастущие", "Среднерастущие", "Медленнорастущие", "Карликовые"],
+        display: true,
+        sidebarDisplay: {
+            display: true,
+            group: 7
         },
         filter: true,
         nullValue: "-"
     },
     {
         name: "lightPreference",
-        displayName: "Предпочтение освещения",
-        type: "string",
+        displayName: "Требования к свету",
+        type: "select",
+        selectValues: ["Светолюбивые", "Теневыносливые", "Тенелюбивые"],
         display: true,
         sidebarDisplay: {
             display: true,
-            group: 7,
-            cols: 2
+            group: 8
+        },
+        filter: true,
+        nullValue: "-",
+    },
+    {
+        name: "waterPreference",
+        displayName: "Требования к влаге",
+        type: "select",
+        selectValues: ["Засухоустойчивые", "Достаточное увлажнение", "Влаголюбивые"],
+        display: true,
+        sidebarDisplay: {
+            display: true,
+            group: 8
         },
         filter: true,
         nullValue: "-"

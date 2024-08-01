@@ -5,6 +5,8 @@ import {persist} from 'zustand/middleware'
 export interface Plant {
     id: number
     name: string // Название растения
+    category: string // Категория
+    kind: string // Вид
     count: number // Количество
     description: string // Описание
     image: string // Изображение
@@ -16,7 +18,8 @@ export interface Plant {
     crownTexture: string // Фактура кроны
     floweringPeriod: string // Период цветения
     flowerColor: string // Цвет цветка
-    lightPreference: string // Предпочтение освещения
+    lightPreference: string // Требования к свету
+    waterPreference: string //  Требования к влаге
 }
 
 interface Store {
@@ -50,7 +53,6 @@ export const useStore = create<Store>()(immer(persist((set) => ({
         state.toastMessage = message
     }),
     setColumnVisibility: (columnVisibility) => set(state => {
-        console.log(columnVisibility())
         state.columnVisibility = {...state.columnVisibility, ...columnVisibility()}
     }),
     sidebarCreate: () => set(state => {
@@ -73,8 +75,11 @@ export const useStore = create<Store>()(immer(persist((set) => ({
     }),
     addPlant: (plant: Plant) => set(state => {
         state.plants.push({
+            ...plant,
             id: Math.max(0, ...state.plants.map(plant => plant.id)) + 1,
-            ...plant
+            width: Number(plant.width),
+            height: Number(plant.height),
+            count: Number(plant.count),
         })
         state.toastMessage = "Запись добавлена"
     }),
