@@ -12,7 +12,7 @@ interface ColumnsButtonProps<TData> {
     table: Table<TData>
 }
 
-export const ColumnsButton = <TData,>({table} : ColumnsButtonProps<TData> ) => {
+export const ColumnsButton = <TData, >({table}: ColumnsButtonProps<TData>) => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

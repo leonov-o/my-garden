@@ -8,7 +8,7 @@ interface MGSelectProps {
     onValueChange?: (value: string) => void
 }
 
-export const MGSelect = ({items, ...props } : MGSelectProps ) => {
+export const MGSelect = ({items, ...props}: MGSelectProps) => {
     return (
         <Select {...props}>
             <SelectTrigger>

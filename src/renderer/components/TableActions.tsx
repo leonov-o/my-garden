@@ -3,8 +3,11 @@ import {useStore} from "@/store";
 import {Button} from "@/components/ui/button";
 import {EyeOpenIcon, Pencil1Icon, TrashIcon} from "@radix-ui/react-icons";
 import {
-    AlertDialog, AlertDialogAction, AlertDialogCancel,
-    AlertDialogContent, AlertDialogFooter,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger

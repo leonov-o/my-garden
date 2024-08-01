@@ -25,9 +25,9 @@ interface DataTableProps<TValue> {
 }
 
 export function DataTable<TValue>({
-                                             columns,
-                                             data,
-                                         }: DataTableProps<TValue>) {
+                                      columns,
+                                      data,
+                                  }: DataTableProps<TValue>) {
 
     const columnVisibility = useStore(state => state.columnVisibility);
     const selectedRecord = useStore(state => state.selectedPlant);

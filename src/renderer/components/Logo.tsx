@@ -2,7 +2,7 @@ import React from 'react';
 
 export const Logo = () => {
     return (
-        <div className="flex" >
+        <div className="flex">
             <div className="w-10 h-10 flex justify-center items-center text-green-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"

@@ -15,7 +15,7 @@ export const MGSelectNew = ({items, disabled, ...props}: MGSelectNewProps) => {
     const [isAdding, setIsAdding] = useState(false);
 
     const handleSwitch = () => {
-        if(!isAdding) {
+        if (!isAdding) {
             props?.onValueChange("-");
         }
         setIsAdding(!isAdding);

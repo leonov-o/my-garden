@@ -4,7 +4,6 @@ import {Button} from "@/components/ui/button";
 import {Table} from "@tanstack/react-table";
 import {MixerVerticalIcon} from "@radix-ui/react-icons";
 import {FieldDef, fields} from "@/lib/FieldDef";
-import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Slider} from "@/components/ui/slider";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
@@ -49,10 +48,6 @@ export const FiltersButton = <TData, >({table}: FiltersButtonProps<TData>) => {
 
                 const min = field.sidebarDisplay.min || 0;
                 const max = maxValue || field.sidebarDisplay.max || 30;
-
-                // const start = filterValue && filterValue[0]
-                // const end = filterValue  && filterValue[1]
-                // console.log(`start: ${start}, end: ${end}`)
 
                 return (
                     <div className="flex">

@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import {type ClassValue, clsx} from "clsx"
+import {twMerge} from "tailwind-merge"
 import {Plant} from "@/store";
 
 export function cn(...inputs: ClassValue[]) {
