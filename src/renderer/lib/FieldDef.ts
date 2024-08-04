@@ -1,3 +1,4 @@
+import {FilterFn} from "@tanstack/react-table";
 
 interface ISidebar {
     display: boolean
@@ -20,6 +21,7 @@ export interface FieldDef {
     postfix?: string
     sidebarDisplay: ISidebar
     filter?: boolean
+    filterFn?: FilterFn<string>
     selectValues?: string[]
 }
 
@@ -208,9 +210,9 @@ export const fields: FieldDef[] = [
     },
     {
         name: "lightPreference",
-        displayName: "Требования к свету",
+        displayName: "Место посадки",
         type: "select",
-        selectValues: ["Светолюбивые", "Теневыносливые", "Тенелюбивые"],
+        selectValues: ["Свет", "Свет | Тень", "Тень"],
         display: true,
         sidebarDisplay: {
             display: true,
@@ -231,5 +233,18 @@ export const fields: FieldDef[] = [
         },
         filter: true,
         nullValue: "-"
+    },
+    {
+        name: "soilPreference",
+        displayName: "Почва",
+        type: "select-new",
+        display: true,
+        sidebarDisplay: {
+            display: true,
+            group: 9,
+            cols: 2
+        },
+        filter: true,
+        nullValue: "-"
     }
-]
+];

@@ -20,6 +20,7 @@ export interface Plant {
     flowerColor: string // Цвет цветка
     lightPreference: string // Требования к свету
     waterPreference: string //  Требования к влаге
+    soilPreference: string // Требования к земле
 }
 
 interface Store {
@@ -39,6 +40,7 @@ interface Store {
     addPlant: (plant: Plant) => void
     updatePlant: (plant: Plant) => void
     deletePlant: (id: number) => void
+    setPlants: (plants: Plant[]) => void
 }
 
 export const useStore = create<Store>()(immer(persist((set) => ({
@@ -74,22 +76,24 @@ export const useStore = create<Store>()(immer(persist((set) => ({
         state.isSidebarOpen = false
     }),
     addPlant: (plant: Plant) => set(state => {
+        const id = Math.max(0, ...state.plants.map(plant => plant.id)) + 1
         state.plants.push({
             ...plant,
-            id: Math.max(0, ...state.plants.map(plant => plant.id)) + 1,
-            width: Number(plant.width),
-            height: Number(plant.height),
-            count: Number(plant.count),
-        })
-        state.toastMessage = "Запись добавлена"
+            id
+        });
+        state.toastMessage = `Запись №${id}  добавлена`
     }),
     updatePlant: (plant: Plant) => set(state => {
         state.plants = state.plants.map(p => p.id === plant.id ? plant : p)
-        state.toastMessage = "Запись обновлена"
+        console.log("update")
+        state.toastMessage = `Запись №${plant.id} обновлена`
     }),
     deletePlant: (id: number) => set(state => {
         state.plants = state.plants.filter(plant => plant.id !== id)
-        state.toastMessage = "Запись удалена"
+        state.toastMessage = `Запись №${id} удалена`
+    }),
+    setPlants: (plants: Plant[]) => set(state => {
+        state.plants = plants
     }),
 }), {
     name: 'store',
