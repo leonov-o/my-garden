@@ -9,6 +9,7 @@ import {FieldDef} from "@/lib/FieldDef";
 import {getUniqueValues} from "@/lib/utils";
 import {MGSelect} from "@/components/MGSelect";
 import {MGSelectNew} from "@/components/MGSelectNew";
+import {AutosizeTextarea} from "@/components/ui/autosize-textarea";
 
 interface SidebarRecordDetailsProps {
     fields: FieldDef[]
@@ -39,9 +40,11 @@ export const SidebarRecordDetails = ({fields}: SidebarRecordDetailsProps) => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
         const plantData = {...formData} as Plant;
-        plantData.image = imagePreview
+        plantData.width = parseFloat(formData.width);
+        plantData.height = parseFloat(formData.height);
+        plantData.count = parseFloat(formData.count);
+        plantData.image = imagePreview;
 
         if (sidebarMode === "create") {
             addPlant(plantData);
@@ -113,7 +116,7 @@ export const SidebarRecordDetails = ({fields}: SidebarRecordDetailsProps) => {
                     </div>
                 );
             case 'textarea':
-                return <Textarea key={field.name} className="min-h-[100px]" {...commonProps} />;
+                return <AutosizeTextarea key={field.name} minHeight={100} {...commonProps} />;
             case "select":
                 return <MGSelect key={field.name} items={field.selectValues} {...commonProps}
                                  onValueChange={(value: string) => handleFieldChange(field.name, value)}/>;
