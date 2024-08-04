@@ -22,6 +22,7 @@ export const FiltersButton = <TData, >({table}: FiltersButtonProps<TData>) => {
 
         switch (field.type) {
             case 'string':
+            case 'string[]':
             case 'select':
             case 'select-new': {
                 const items = getUniqueValues(plants, field.name as keyof Plant);

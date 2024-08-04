@@ -40,18 +40,31 @@ export const SidebarRecordDetails = ({fields}: SidebarRecordDetailsProps) => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const plantData = {...formData} as Plant;
-        plantData.width = parseFloat(formData.width);
-        plantData.height = parseFloat(formData.height);
-        plantData.count = parseFloat(formData.count);
-        plantData.image = imagePreview;
+
+        const plantData: { [key: string]: string | string[] | number | null } = {};
+        fields.forEach(field => {
+            switch (field.type) {
+                case "number":
+                    plantData[field.name] = parseFloat(formData[field.name]);
+                    break;
+                case "image":
+                    plantData[field.name] = imagePreview;
+                    break;
+                // case "string[]":
+                //     plantData[field.name] = formData[field.name] && formData[field.name].split(',').map((item: string) => item.trim());
+                //     break;
+                default:
+                    plantData[field.name] = formData[field.name] || null;
+            }
+        });
 
         if (sidebarMode === "create") {
-            addPlant(plantData);
+            addPlant(plantData as unknown as Plant);
         } else if (sidebarMode === "update") {
             plantData.id = selectedRecord.id
-            updatePlant(plantData);
+            updatePlant(plantData as unknown as Plant);
         }
+
         sidebarClose();
     };
 
@@ -95,6 +108,7 @@ export const SidebarRecordDetails = ({fields}: SidebarRecordDetailsProps) => {
 
         switch (field.type) {
             case 'string':
+            case 'string[]':
                 return <Input key={field.name} type="text" {...commonProps} />;
             case 'number':
                 return <Input key={field.name} type="number" min={field.sidebarDisplay.min}

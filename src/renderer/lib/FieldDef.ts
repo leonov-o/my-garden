@@ -14,7 +14,7 @@ interface ISidebar {
 export interface FieldDef {
     name: string
     displayName: string
-    type: "number" | "string" | "select" | "select-new" | "textarea" | "image"
+    type: "number" | "string" | "string[]" | "select" | "select-new" | "textarea" | "image"
     ref?: string
     display?: boolean
     nullValue?: string
@@ -186,7 +186,7 @@ export const fields: FieldDef[] = [
     {
         name: "floweringPeriod",
         displayName: "Период цветения",
-        type: "string",
+        type: "string[]",
         display: true,
         sidebarDisplay: {
             display: true,
