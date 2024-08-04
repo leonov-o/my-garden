@@ -21,7 +21,7 @@ export const Header = () => {
                 <NavigationMenu>
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavLink to="/main_window" end>
+                            <NavLink to="/" end>
                                 {({isActive}) => (
                                     <div>
                                         <div

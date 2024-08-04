@@ -1,19 +1,19 @@
-import {createBrowserRouter} from "react-router-dom";
+import {createHashRouter} from "react-router-dom";
 import {LayoutPage, PlantListPage} from "@/pages";
 
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
     {
-        path: "/main_window",
+        path: "/",
         element: <LayoutPage/>,
         children: [
             {
-                path: "/main_window",
+                path: "/",
                 element: <PlantListPage/>
             },
             {
                 index: true,
-                path: "/main_window/a",
+                path: "/a",
                 element: <div>dfsdfsdfsd</div>
             }
         ]
