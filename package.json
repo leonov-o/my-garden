@@ -1,8 +1,8 @@
 {
-  "name": "my-garden",
-  "productName": "my-garden",
+  "name": "mygarden",
+  "productName": "mygarden",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "My Garden",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
