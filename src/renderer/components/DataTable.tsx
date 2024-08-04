@@ -34,6 +34,7 @@ export function DataTable<TValue>({
     const setColumnVisibility = useStore(state => state.setColumnVisibility);
 
     const [sorting, setSorting] = React.useState<SortingState>([])
+    const [globalFilter, setGlobalFilter] = React.useState('')
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
     )
@@ -46,10 +47,13 @@ export function DataTable<TValue>({
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
+        onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: "includesString",
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         state: {
             sorting,
+            globalFilter,
             columnFilters,
             columnVisibility
         },
@@ -97,7 +101,9 @@ export function DataTable<TValue>({
                                                 "bg-green-100": row.getValue("id") === selectedRecord?.id
                                             }
                                         )} key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            {
+                                                flexRender(cell.column.columnDef.cell, cell.getContext())
+                                            }
                                         </TableCell>
                                     ))}
                                 </TableRow>

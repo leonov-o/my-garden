@@ -8,6 +8,22 @@ import {fields} from "@/lib/FieldDef";
 import {CellContext, ColumnDef} from "@tanstack/react-table";
 import {TableActions} from "@/components/TableActions";
 
+const highlightText = (text: string, filter: string) => {
+    if (!filter) return text;
+    const regex = new RegExp(`(${filter})`, 'gi');
+    const parts = text.split(regex);
+
+    return parts.map((part, index) =>
+        part.toLowerCase() === filter.toLowerCase() ? (
+            <span key={index} className="bg-yellow-200">
+        {part}
+      </span>
+        ) : (
+            part
+        )
+    );
+};
+
 export const PlantListPage = () => {
     const plants = useStore((state) => state.plants);
     const isSidebarOpen = useStore((state) => state.isSidebarOpen);
@@ -26,11 +42,13 @@ export const PlantListPage = () => {
         .filter(field => field.display)
         .map(field => ({
             accessorKey: field.name,
+            accessorFn: (row: Plant) => row[field.name as keyof Plant] || "",
             header: field.displayName,
-            cell: ({getValue}: CellContext<Plant, unknown>) => {
+            cell: ({getValue, table}: CellContext<Plant, unknown>) => {
                 const value = getValue();
+
                 if (value) {
-                    return `${value.toString()} ${field.postfix || ""}`;
+                    return highlightText(`${value.toString()} ${field.postfix || ""}`, table.getState().globalFilter);
                 }
                 return field.nullValue || "";
             },
