@@ -1,4 +1,6 @@
 import {FilterFn} from "@tanstack/react-table";
+import {Plant} from "@/store";
+import {FilterFnOption} from "@tanstack/table-core/src/features/ColumnFiltering";
 
 interface ISidebar {
     display: boolean
@@ -11,17 +13,22 @@ interface ISidebar {
     step?: number
 }
 
+interface IGroupedData {
+    [key: string]: string[]
+}
+
 export interface FieldDef {
     name: string
     displayName: string
-    type: "number" | "string" | "string[]" | "select" | "select-new" | "textarea" | "image"
+    type: "number" | "string" | "string[]" | "string-grouped" | "select" | "select-new" | "textarea" | "image",
+    groupedData?: IGroupedData,
     ref?: string
     display?: boolean
     nullValue?: string
     postfix?: string
     sidebarDisplay: ISidebar
     filter?: boolean
-    filterFn?: FilterFn<string>
+    filterFn?: FilterFn<Plant> | FilterFnOption<Plant>,
     selectValues?: string[]
 }
 
@@ -174,7 +181,12 @@ export const fields: FieldDef[] = [
     {
         name: "flowerColor",
         displayName: "Цвет цветка",
-        type: "string",
+        type: "string-grouped",
+        groupedData: {
+            "Теплые": ["оранжевый", "желтый", "красный", "розовый", "коричневый", "бежевый"],
+            "Холодные": ["синий", "голубой", "фиолетовый", "сиреневый", "зеленый"],
+            "Белый": ["белый"]
+        },
         display: true,
         sidebarDisplay: {
             display: true,

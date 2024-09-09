@@ -26,3 +26,19 @@ export const getUniqueValuesFromList = (plants: Plant[], field: keyof Plant) => 
       plants.flatMap(plant => plant[field]?.toString().split(",").map(value => value.trim()) || [])
   ));
 };
+
+export const getGroupNamesFromValues = (
+    plants: Plant[],
+    field: keyof Plant,
+    groupedData: Record<string, string[]>
+): string[] => {
+
+  const values = plants
+      .map(plant => plant[field])
+      .filter(value => value)
+      .flatMap(value => value.toString().toLowerCase().split(',').map(v => v.trim()));
+
+  return Object.entries(groupedData)
+      .filter(([_, groupValues]) => groupValues.some(groupValue => values.includes(groupValue.toLowerCase())))
+      .map(([groupName]) => groupName);
+};

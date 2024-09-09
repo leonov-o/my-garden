@@ -7,7 +7,7 @@ import {FieldDef, fields} from "@/lib/FieldDef";
 import {Label} from "@/components/ui/label";
 import {Slider} from "@/components/ui/slider";
 import {Plant, useStore} from "@/store";
-import {getMaxValue, getUniqueValues, getUniqueValuesFromList} from "@/lib/utils";
+import {getGroupNamesFromValues, getMaxValue, getUniqueValues, getUniqueValuesFromList} from "@/lib/utils";
 import {MGSelect} from "@/components/MGSelect";
 
 interface FiltersButtonProps<TData> {
@@ -35,10 +35,15 @@ export const FiltersButton = <TData, >({table}: FiltersButtonProps<TData>) => {
                                  onValueChange={(value) => column.setFilterValue(value === '-' ? undefined : value)}
                                  disabled={!items || items.length === 0} key={field.name}/>;
             }
+            case "string-grouped": {
+                const items = getGroupNamesFromValues(plants, field.name as keyof Plant, field.groupedData);
+                return <MGSelect className="w-52" items={items} value={column.getFilterValue() as string || "-"}
+                                 onValueChange={(value) => column.setFilterValue(value === '-' ? undefined : value)}
+                                 disabled={!items || items.length === 0} key={field.name}/>;
+            }
             case 'number': {
                 const maxValue = getMaxValue(plants, field.name as keyof Plant);
                 const filterValue = column.getFilterValue() as number[];
-
                 const min = field.sidebarDisplay.min || 0;
                 const max = maxValue || field.sidebarDisplay.max || 30;
 

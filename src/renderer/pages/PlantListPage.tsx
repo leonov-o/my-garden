@@ -5,8 +5,9 @@ import {SidebarRecordDetails} from "@/components/SidebarRecordDetails";
 import {Toaster} from "@/components/ui/toaster";
 import {toast} from "@/components/ui/use-toast";
 import {fields} from "@/lib/FieldDef";
-import {CellContext, ColumnDef} from "@tanstack/react-table";
+import {CellContext, ColumnDef, FilterFn} from "@tanstack/react-table";
 import {TableActions} from "@/components/TableActions";
+import {FilterFnOption} from "@tanstack/table-core/src/features/ColumnFiltering";
 
 const highlightText = (text: string, filter: string) => {
     if (!filter) return text;
@@ -40,25 +41,35 @@ export const PlantListPage = () => {
 
     const columns: ColumnDef<Plant>[] = fields
         .filter(field => field.display)
-        .map(field => ({
-            accessorKey: field.name,
-            accessorFn: (row: Plant) => row[field.name as keyof Plant] || "",
-            header: field.displayName,
-            cell: ({getValue, table}: CellContext<Plant, unknown>) => {
-                const value = getValue();
-
-                if (value) {
-                    return highlightText(`${value.toString()} ${field.postfix || ""}`, table.getState().globalFilter);
+        .map(field => {
+            let filterFn: FilterFnOption<Plant> | FilterFn<Plant> = "equalsString";
+            if (field.type === "number") {
+                filterFn = "inNumberRange";
+            } else if (field.type === "string[]") {
+                filterFn = "includesString";
+            } else if (field.type === "string-grouped") {
+                filterFn = (row, columnId, filterValue) => {
+                    const values = row.getValue(columnId).toString().toLowerCase().split(',').map(v => v.trim());
+                    const groupValues = field.groupedData[filterValue];
+                    return groupValues.some(groupValue => values.includes(groupValue.toLowerCase()));
                 }
-                return field.nullValue || "";
-            },
-            filterFn: field.type === "number"
-                ? "inNumberRange"
-                : field.type === "string[]"
-                    ? "includesString"
-                    : "equalsString"
+            }
 
-        }));
+            return {
+                accessorKey: field.name,
+                accessorFn: (row: Plant) => row[field.name as keyof Plant] || "",
+                header: field.displayName,
+                cell: ({getValue, table}: CellContext<Plant, unknown>) => {
+                    const value = getValue();
+
+                    if (value) {
+                        return highlightText(`${value.toString()} ${field.postfix || ""}`, table.getState().globalFilter);
+                    }
+                    return field.nullValue || "";
+                },
+                filterFn
+            }
+        });
     columns.push({
             id: "actions",
             enableHiding: false,

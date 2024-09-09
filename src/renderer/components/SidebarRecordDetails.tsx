@@ -105,6 +105,7 @@ export const SidebarRecordDetails = ({fields}: SidebarRecordDetailsProps) => {
         switch (field.type) {
             case 'string':
             case 'string[]':
+            case 'string-grouped':
                 return <Input key={field.name} type="text" {...commonProps} />;
             case 'number':
                 return <Input key={field.name} type="number" min={field.sidebarDisplay.min}
