@@ -6,9 +6,9 @@ import {MixerVerticalIcon} from "@radix-ui/react-icons";
 import {FieldDef, fields} from "@/lib/FieldDef";
 import {Label} from "@/components/ui/label";
 import {Slider} from "@/components/ui/slider";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Plant, useStore} from "@/store";
-import {getMaxValue, getUniqueValues} from "@/lib/utils";
+import {getMaxValue, getUniqueValues, getUniqueValuesFromList} from "@/lib/utils";
+import {MGSelect} from "@/components/MGSelect";
 
 interface FiltersButtonProps<TData> {
     table: Table<TData>
@@ -22,26 +22,18 @@ export const FiltersButton = <TData, >({table}: FiltersButtonProps<TData>) => {
 
         switch (field.type) {
             case 'string':
-            case 'string[]':
             case 'select':
             case 'select-new': {
                 const items = getUniqueValues(plants, field.name as keyof Plant);
-
-                return (
-                    <Select value={column.getFilterValue() as string || "-"}
-                            onValueChange={(value) => column.setFilterValue(value === '-' ? undefined : value)}
-                            disabled={!items || items.length === 0} key={field.name}>
-                        <SelectTrigger className="w-52">
-                            <SelectValue placeholder="-"/>
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="-">-</SelectItem>
-                            {items.map(item => (
-                                <SelectItem key={item} value={item.toString()}>{item}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                );
+                return <MGSelect className="w-52" items={items} value={column.getFilterValue() as string || "-"}
+                                 onValueChange={(value) => column.setFilterValue(value === '-' ? undefined : value)}
+                                 disabled={!items || items.length === 0} key={field.name}/>;
+            }
+            case 'string[]': {
+                const items = getUniqueValuesFromList(plants, field.name as keyof Plant);
+                return <MGSelect className="w-52" items={items} value={column.getFilterValue() as string || "-"}
+                                 onValueChange={(value) => column.setFilterValue(value === '-' ? undefined : value)}
+                                 disabled={!items || items.length === 0} key={field.name}/>;
             }
             case 'number': {
                 const maxValue = getMaxValue(plants, field.name as keyof Plant);

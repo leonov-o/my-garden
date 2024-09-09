@@ -20,3 +20,9 @@ export const getUniqueValues = (plants: Plant[], field: keyof Plant, refField?: 
   const values = filteredPlants.map(plant => plant[field]);
   return Array.from(new Set(values)).filter(value => value);
 };
+
+export const getUniqueValuesFromList = (plants: Plant[], field: keyof Plant) => {
+  return Array.from(new Set(
+      plants.flatMap(plant => plant[field]?.toString().split(",").map(value => value.trim()) || [])
+  ));
+};

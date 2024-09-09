@@ -52,7 +52,12 @@ export const PlantListPage = () => {
                 }
                 return field.nullValue || "";
             },
-            filterFn: field.type === "number" ? "inNumberRange" : "equalsString"
+            filterFn: field.type === "number"
+                ? "inNumberRange"
+                : field.type === "string[]"
+                    ? "includesString"
+                    : "equalsString"
+
         }));
     columns.push({
             id: "actions",

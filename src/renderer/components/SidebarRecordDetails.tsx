@@ -4,7 +4,6 @@ import {Plant, useStore} from "@/store";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
-import {Textarea} from "@/components/ui/textarea";
 import {FieldDef} from "@/lib/FieldDef";
 import {getUniqueValues} from "@/lib/utils";
 import {MGSelect} from "@/components/MGSelect";
@@ -50,9 +49,6 @@ export const SidebarRecordDetails = ({fields}: SidebarRecordDetailsProps) => {
                 case "image":
                     plantData[field.name] = imagePreview;
                     break;
-                // case "string[]":
-                //     plantData[field.name] = formData[field.name] && formData[field.name].split(',').map((item: string) => item.trim());
-                //     break;
                 default:
                     plantData[field.name] = formData[field.name] || null;
             }

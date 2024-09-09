@@ -3,6 +3,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 
 interface MGSelectProps {
     items: (string | number)[]
+    className?: string
     disabled?: boolean
     value?: string
     onValueChange?: (value: string) => void
@@ -11,7 +12,7 @@ interface MGSelectProps {
 export const MGSelect = ({items, ...props}: MGSelectProps) => {
     return (
         <Select {...props}>
-            <SelectTrigger>
+            <SelectTrigger className={props?.className}>
                 <SelectValue placeholder="-"/>
             </SelectTrigger>
             <SelectContent>
